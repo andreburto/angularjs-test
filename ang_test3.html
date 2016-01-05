@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AngularJS</title>
+<script src="angular.min.js"></script>
+</head>
+<body>
+<div ng-app="testApp" ng-controller="checkCtrl">
+<p>Checked: {{checkedOrNot}}</p>
+<p>Time: {{timeNow}}</p>
+<label for="theCheck">Click here</label>
+<input type="checkbox" id="theCheck" name="theCheck" ng-click="updateSelection($event)">
+</div>
+<script>
+var app = angular.module('testApp', []);
+app.controller('checkCtrl', function($scope, $http) {
+	$scope.checkedOrNot = "No";
+	$scope.timeNow;
+
+	$scope.updateSelection = function($event) {
+		var cb = $event.target;
+		var con = (cb.checked ? 'Yes' : 'No');
+		$http.post('checkbox1.php', {'checked':con})
+			.then(function(res) {
+				$scope.checkedOrNot = res.data.checked;
+				$scope.timeNow = res.data.thetime;
+			}, function(res) {
+				alert("Error: "+res)
+			});
+	};
+});
+</script>
+</body>
+</html>
