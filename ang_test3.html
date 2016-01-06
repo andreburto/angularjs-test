@@ -9,7 +9,7 @@
 <p>Checked: {{checkedOrNot}}</p>
 <p>Time: {{timeNow}}</p>
 <label for="theCheck">Click here</label>
-<input type="checkbox" id="theCheck" name="theCheck" ng-click="updateSelection($event)">
+<input type="checkbox" id="theCheck" name="theCheck" ng-change="updateSelection()" ng-init="init()" ng-model="checker">
 </div>
 <script>
 var app = angular.module('testApp', []);
@@ -17,13 +17,24 @@ app.controller('checkCtrl', function($scope, $http) {
 	$scope.checkedOrNot = "No";
 	$scope.timeNow;
 
-	$scope.updateSelection = function($event) {
-		var cb = $event.target;
-		var con = (cb.checked ? 'Yes' : 'No');
+	$scope.updateSelection = function() {
+		//var cb = $event.target;
+		var con = ($scope.checker ? 'Yes' : 'No');
 		$http.post('checkbox1.php', {'checked':con})
 			.then(function(res) {
 				$scope.checkedOrNot = res.data.checked;
 				$scope.timeNow = res.data.thetime;
+			}, function(res) {
+				alert("Error: "+res)
+			});
+	};
+	
+	$scope.init = function() {
+		$http.get('checkbox1.php')
+			.then(function(res) {
+				$scope.checkedOrNot = res.data.checked;
+				$scope.timeNow = res.data.thetime;
+				$scope.checker = ("Yes"==res.data.checked);
 			}, function(res) {
 				alert("Error: "+res)
 			});
