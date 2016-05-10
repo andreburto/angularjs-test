@@ -6,27 +6,21 @@
     </head>
     <body ng-app="TagTest">
         <yvonne-img-tag></yvonne-img-tag>
+        <yvonne-img-tag></yvonne-img-tag>
         <script>
 
 var app = angular.module("TagTest", []);
 
-app.controller('yvonneImg', function($scope, $http, $compile) {
-
+app.controller('yvonneImg', function($scope, $http, $sce) {
     $scope.code = 'Yvonne';
-    
-    $scope.bluh = function() {
-        console.log('yvonne');
-    }
-    
-    $http.get('test2.php').then(function(res) { $scope.code = res.data; },
+    $http.get('test2.php').then(function(res) { $scope.code = $sce.trustAsHtml(res.data); },
                                 function(res) { $scope.code = res.statusText; });
 });
 
 app.directive("yvonneImgTag", function($compile) {
     return {
+            template: '<div ng-controller="yvonneImg" ng-bind-html="code"></div>',
             replace: true,
-            transclude: true,
-            template: '<div ng-controller="yvonneImg" ng-change="bluh()">{{code}}</div>',
         };
 });
 
