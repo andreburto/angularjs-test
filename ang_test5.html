@@ -12,14 +12,17 @@
 var app = angular.module("TagTest", []);
 
 app.controller('yvonneImg', function($scope, $http, $sce) {
-    $scope.code = 'Yvonne';
-    $http.get('test2.php').then(function(res) { $scope.code = $sce.trustAsHtml(res.data); },
-                                function(res) { $scope.code = res.statusText; });
+    $scope.json = "";
+    
+    $scope.picLoad = function() {
+        $http.get('test3.php').then(function(res) { $scope.json = res.data},
+                                    function(res) { $scope.code = res.statusText; });
+    }
 });
 
 app.directive("yvonneImgTag", function($compile) {
     return {
-            template: '<div ng-controller="yvonneImg" ng-bind-html="code"></div>',
+            template: '<div ng-controller="yvonneImg" ng-init="picLoad()"><img src="{{json.thumb}}" ng-click="picLoad()" border="0"/></div>',
             replace: true,
         };
 });
